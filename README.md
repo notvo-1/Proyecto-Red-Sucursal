@@ -23,7 +23,12 @@ ESTRUCTURA DEL PROYECTO
 
 proyecto_red/
 
-├── scripts/  └── red_sucursal.py# <--- Script principal  ├── docs/Reportes/         # Documentación generada  ├── configs/               # Archivos de configuración Cisco (output)  ├── logs/                  # Registros de eventos  └── README.md              # Documentación del repositorio  
+├── scripts/  
+└── red_sucursal.py# <--- Script principal  
+├── docs/Reportes/ ----- # Documentación generada  
+├── configs/ ---  # Archivos de configuración Cisco (output)  
+├── logs/ ------ # Registros de eventos  
+└── README.md              # Documentación del repositorio  
 
 --------------------------------------------------
 CONFIGURACIÓN DE VLANs
