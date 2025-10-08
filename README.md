@@ -1,68 +1,65 @@
-Proyecto Red Sucursal - Sistema de Automatización
-Sistema de automatización para configuración de redes Cisco - Generador de comandos y documentación para implementación en Packet Tracer.
+==================================================
+PROYECTO RED SUCURSAL - SISTEMA DE AUTOMATIZACIÓN
+==================================================
 
-Características Principales
-Generador de Comandos Cisco: Crea configuraciones listas para Packet Tracer
+Este proyecto implementa un SISTEMA DE AUTOMATIZACIÓN Y GENERACIÓN DE
+COMANDOS CISCO, diseñado para optimizar la configuración, gestión de VLANs
+y documentación de la infraestructura de red en Cisco Packet Tracer.
 
-Gestión de VLANs: Administra VLANs de administración, usuarios, servidores
+--------------------------------------------------
+CARACTERÍSTICAS CLAVE
+--------------------------------------------------
 
-Reportes Automáticos: Genera documentación técnica
+- GENERADOR DE COMANDOS: Crea scripts de configuración listos para la CLI.
+- GESTIÓN DE VLANs: Administración centralizada de la segmentación de red.
+- REPORTES AUTOMÁTICOS: Genera documentación técnica profesional.
+- INTERFAZ INTUITIVA: Menú interactivo en consola.
 
-Interfaz Intuitiva: Menú interactivo fácil de usar
+--------------------------------------------------
+ESTRUCTURA DEL PROYECTO
+--------------------------------------------------
 
-Estructura del Proyecto
-text
 proyecto_red/
-├── scripts/red_sucursal.py     # Sistema principal
-├── docs/reportes/              # Reportes generados
-├── configs/                    # Configuraciones
-├── logs/                       # Registros
-└── README.md
-Configuración de VLANs
-El sistema gestiona estas VLANs:
+├── scripts/
+│   └── red_sucursal.py    # <--- Script principal
+├── docs/reportes/         # Documentación generada
+├── configs/               # Archivos de configuración Cisco (output)
+├── logs/                  # Registros de eventos
+└── README.md              # Documentación del repositorio
 
-VLAN 10: ADMINISTRACION - Personal administrativo
+--------------------------------------------------
+CONFIGURACIÓN DE VLANs
+--------------------------------------------------
 
-VLAN 20: VENTAS - Departamento de ventas
+El sistema gestiona la siguiente segmentación de red:
 
-VLAN 30: SOPORTE - Equipo de soporte técnico
+| ID | Nombre         | Propósito
+|----|----------------|-------------------------------------
+| 10 | ADMINISTRACION | Personal administrativo y gerencial.
+| 20 | VENTAS         | Departamento de ventas.
+| 30 | SOPORTE        | Equipo de soporte técnico.
+| 40 | SERVIDORES     | Servidores internos y aplicaciones.
+| 99 | MANAGEMENT     | Gestión de dispositivos de red.
 
-VLAN 40: SERVIDORES - Servidores internos
+--------------------------------------------------
+USO E IMPLEMENTACIÓN
+--------------------------------------------------
 
-VLAN 99: MANAGEMENT - Gestión de dispositivos
+1. REQUISITOS:
+   El sistema requiere **Python 3.8+**.
 
-Instalación y Uso
-Ejecutar el sistema:
+2. EJECUCIÓN:
+   Para iniciar, navega al directorio raíz y ejecuta:
+   $ python scripts/red_sucursal.py
 
-bash
-python scripts/red_sucursal.py
-Seguir el menú interactivo para generar configuraciones
+3. APLICACIÓN EN PACKET TRACER:
+   - Usa el menú para generar los comandos.
+   - Copia la salida del script.
+   - Pega los comandos en la CLI de los dispositivos en Packet Tracer.
+   - Verifica la configuración con el comando 'show vlan brief'.
 
-Funcionalidades
-Estado de Red: Visualiza VLANs y puertos configurados
+--------------------------------------------------
+AUTORES
+--------------------------------------------------
 
-Generador de Comandos: Crea configuraciones Cisco listas para usar
-
-Configuración Automática: Completa asignaciones faltantes
-
-Reportes: Genera documentación profesional
-
-Verificación: Valida la configuración propuesta
-
-Uso con Packet Tracer
-Generar comandos con el script
-
-Copiar y pegar en Packet Tracer
-
-Verificar con show vlan brief
-
-Autores
-Mati
-
-Lucas
-
-Santi
-
-Martin
-
-Proyecto para Tecnicatura Universitaria en Programación.
+Proyecto desarrollado por: Mati, Lucas, Santi, y Martin.
