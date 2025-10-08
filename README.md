@@ -1,5 +1,7 @@
 ==================================================
+
 PROYECTO RED SUCURSAL - SISTEMA DE AUTOMATIZACIÓN
+
 ==================================================
 
 Este proyecto implementa un SISTEMA DE AUTOMATIZACIÓN Y GENERACIÓN DE
@@ -20,12 +22,8 @@ ESTRUCTURA DEL PROYECTO
 --------------------------------------------------
 
 proyecto_red/
-├── scripts/
-│   └── red_sucursal.py    # <--- Script principal
-├── docs/reportes/         # Documentación generada
-├── configs/               # Archivos de configuración Cisco (output)
-├── logs/                  # Registros de eventos
-└── README.md              # Documentación del repositorio
+
+├── scripts/  └── red_sucursal.py# <--- Script principal  ├── docs/Reportes/         # Documentación generada  ├── configs/               # Archivos de configuración Cisco (output)  ├── logs/                  # Registros de eventos  └── README.md              # Documentación del repositorio  
 
 --------------------------------------------------
 CONFIGURACIÓN DE VLANs
