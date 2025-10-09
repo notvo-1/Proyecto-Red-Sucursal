@@ -1,0 +1,127 @@
+======================================================================
+           REPORTE COMPLETO DE CONFIGURACIÓN DE RED
+======================================================================
+Proyecto: Red Sucursal - Implementación
+Fecha: 08/10/2025 20:46:31
+Generado automáticamente por el sistema de gestión
+======================================================================
+
+VLANS CONFIGURADAS:
+--------------------------------------------------
+VLAN 10: ADMINISTRACION
+  Descripción: Personal administrativo
+  Puertos: Gig1/0/4
+
+VLAN 20: VENTAS
+  Descripción: Departamento de ventas
+  Puertos: Gig1/0/1, Gig1/0/2, Gig1/0/3
+
+VLAN 30: SOPORTE
+  Descripción: Equipo de soporte técnico
+  Puertos: Gig1/0/22
+
+VLAN 40: SERVIDORES
+  Descripción: Servidores internos
+  Puertos: Gig1/0/24
+
+VLAN 99: MANAGEMENT
+  Descripción: Gestión de dispositivos
+  Puertos: Gig1/0/10, Gig1/0/11
+
+
+COMANDOS PARA IMPLEMENTACIÓN:
+----------------------------------------
+! Copiar y pegar en Cisco Packet Tracer
+
+! =========================================
+! COMANDOS PARA CREACIÓN DE VLANs
+! =========================================
+configure terminal
+vlan 10
+ name ADMINISTRACION
+!
+vlan 20
+ name VENTAS
+!
+vlan 30
+ name SOPORTE
+!
+vlan 40
+ name SERVIDORES
+!
+vlan 99
+ name MANAGEMENT
+!
+end
+! =========================================
+
+! =========================================
+! COMANDOS PARA ASIGNACIÓN DE PUERTOS
+! =========================================
+configure terminal
+interface Gig1/0/22
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+! Conectado a: PC-SOPORTE
+!
+interface Gig1/0/24
+ switchport mode access
+ switchport access vlan 40
+ spanning-tree portfast
+! Conectado a: SERVER1
+!
+interface Gig1/0/23
+ switchport mode trunk
+ switchport trunk native vlan 99
+! Puerto trunk - Conexión entre switches
+!
+end
+copy running-config startup-config
+! =========================================
+! =========================================
+! COMANDOS PARA CREACIÓN DE VLANs
+! =========================================
+configure terminal
+vlan 10
+ name ADMINISTRACION
+!
+vlan 20
+ name VENTAS
+!
+vlan 30
+ name SOPORTE
+!
+vlan 40
+ name SERVIDORES
+!
+vlan 99
+ name MANAGEMENT
+!
+end
+! =========================================
+
+! =========================================
+! COMANDOS PARA ASIGNACIÓN DE PUERTOS
+! =========================================
+configure terminal
+interface Gig1/0/22
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+! Conectado a: PC-SOPORTE
+!
+interface Gig1/0/24
+ switchport mode access
+ switchport access vlan 40
+ spanning-tree portfast
+! Conectado a: SERVER1
+!
+interface Gig1/0/23
+ switchport mode trunk
+ switchport trunk native vlan 99
+! Puerto trunk - Conexión entre switches
+!
+end
+copy running-config startup-config
+! =========================================
