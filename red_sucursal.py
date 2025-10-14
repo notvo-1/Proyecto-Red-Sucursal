@@ -15,6 +15,8 @@ class GestorRedSucursal:
     def __init__(self):
         self.nombre_proyecto = "Red Sucursal - Implementación"
         self.archivo_log = "logs/operaciones_red.log"
+        self.state = "state.txt"
+        # self.estado_real = {}
         self.crear_estructura_directorios()
         
         # CONFIGURACIÓN BASE DE LA RED (tu configuración actual)
@@ -34,6 +36,114 @@ class GestorRedSucursal:
                 {"nombre": "Server1", "tipo": "Servidor", "ip": "10.10.40.11", "vlan": 40}
             ]
         }
+    
+    def cargar_estado_actual(self):
+        try:
+            with open(self.state, "r", encoding="utf-8") as archivo:
+                lineas = archivo.readlines()
+            
+            print(f"DEBUG: Número de líneas leídas: {len(lineas)}")
+            
+            # CAMBIAR "dispositivos" por "puertos"
+            estado_real = {
+                "vlans": {},
+                "puertos": {}  # ← ESTA ES LA CLAVE
+            }
+            
+            seccion_actual = None
+            
+            for i, linea in enumerate(lineas):
+                linea = linea.strip()
+                
+                if "show vlan brief" in linea:
+                    seccion_actual = "vlan_brief"
+                    print(f"DEBUG: Sección vlan brief detectada")
+                    continue
+                elif "show interfaces status" in linea:
+                    seccion_actual = "interfaces_status" 
+                    print(f"DEBUG: Sección interfaces status detectada")
+                    continue
+                elif not linea:
+                    continue
+                
+                if seccion_actual == "vlan_brief":
+                    self._procesar_linea_vlan_brief(linea, estado_real)
+                elif seccion_actual == "interfaces_status":
+                    self._procesar_linea_interfaces_status(linea, estado_real)
+            
+            print(f"DEBUG: VLANs encontradas: {list(estado_real['vlans'].keys())}")
+            print(f"DEBUG: Puertos encontrados: {len(estado_real['puertos'])}")
+            
+            self.estado_real = estado_real
+            self.log_operacion("Estado actual cargado desde state.txt")
+            return estado_real
+            
+        except FileNotFoundError:
+            print("❌ Archivo state.txt no encontrado")
+            return None
+        except Exception as e:
+            print(f"❌ Error leyendo state.txt: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+        
+        
+    def _procesar_linea_vlan_brief(self, linea, estado_real):
+        if linea and linea[0].isdigit():
+            partes = linea.split()
+            if len(partes) >= 3:
+                vlan_id = int(partes[0])
+                vlan_nombre = partes[1]
+                estado = partes[2]
+                
+                
+                puertos = []
+                if len(partes) > 3:
+                    # Extraer puertos de esta línea
+                    puertos = self._extraer_puertos_desde_texto(' '.join(partes[3:]))
+                
+                estado_real["vlans"][vlan_id] = {
+                    "nombre": vlan_nombre,
+                    "estado": estado,
+                    "puertos": puertos
+                }
+        
+        # Si la línea empieza con espacios, es continuación de puertos
+        elif linea and linea.startswith(' '):
+            puertos = self._extraer_puertos_desde_texto(linea)
+            if estado_real["vlans"] and puertos:
+                # Agregar a la última VLAN procesada
+                ultima_vlan_id = list(estado_real["vlans"].keys())[-1]
+                estado_real["vlans"][ultima_vlan_id]["puertos"].extend(puertos)
+
+    def _procesar_linea_interfaces_status(self, linea, estado_real):
+        """Procesa una línea de la sección show interfaces status"""
+        # Saltar encabezados y líneas que no son de puertos
+        if "Port" in linea or "----" in linea or not linea:
+            return
+        
+        partes = linea.split()
+        if len(partes) >= 4:
+            puerto = partes[0]
+            estado = partes[1]
+            vlan = partes[2]
+            
+            estado_real["puertos"][puerto] = {
+                "estado": estado,
+                "vlan": vlan
+            }
+            
+    def _extraer_puertos_desde_texto(self, texto):
+        """Extrae nombres de puertos del texto (ej: 'Gig1/0/1, Gig1/0/2, Gig1/0/3')"""
+        import re
+        return re.findall(r'Gig\d+/\d+/\d+', texto)
+                    
+    
+
+
+    
+    def comparar_configuracion(self):
+        pass
     
     def crear_estructura_directorios(self):
         """Crea la estructura de directorios del proyecto"""
@@ -226,10 +336,29 @@ class GestorRedSucursal:
         print("   show running-config      - Ver configuración completa")
         
         self.log_operacion("Verificación de configuración realizada")
+    def mostrar_estado_real(self):
+        """Muestra el estado real leído del switch"""
+        if not hasattr(self, 'estado_real'):
+            print("❌ Primero carga el estado actual (opción 8)")
+            return
+        
+        print("\n" + "="*70)
+        print("           ESTADO REAL DEL SWITCH (state.txt)")
+        print("="*70)
+        
+        print("\nVLANS DETECTADAS:")
+        for vlan_id, datos in self.estado_real["vlans"].items():
+            print(f"  VLAN {vlan_id}: {datos['nombre']}")
+            print(f"    Puertos: {', '.join(datos['puertos']) if datos['puertos'] else 'Ninguno'}")
 
 def main():
     """Función principal con menú interactivo"""
     sistema = GestorRedSucursal()
+    estado = sistema.cargar_estado_actual()
+    if estado:
+        print("✅ Estado actual cargado correctamente")
+    else:
+        print("⚠️  No se pudo cargar el estado actual")
     
     print(" SISTEMA DE GESTIÓN DE RED - SUCURSAL")
     print("   Automatización de configuración Cisco")
@@ -237,21 +366,22 @@ def main():
     
     while True:
         
-        limpiar_consola()
+        
         print("\n MENÚ PRINCIPAL:")
-        print("   1.  Mostrar estado actual de la red")
+        print("   1.  Mostrar estado actual de la red (leer vlans)")
         print("   2.  Generar comandos para VLANs")
         print("   3.  Generar comandos para puertos")
         print("   4.  Completar configuración automáticamente")
         print("   5.  Generar reporte completo")
         print("   6.  Verificar configuración")
-        print("   7.  Salir")
+        print("   7. Recargar estado actual state.txt")
+        print("   8. Salir")
         print("-" * 40)
         
         opcion = input("Seleccione una opción (1-7): ").strip()
         
         if opcion == "1":
-            sistema.mostrar_estado_actual()
+            sistema.mostrar_estado_real()
         
         elif opcion == "2":
             sistema.generar_comandos_vlans()
@@ -268,8 +398,11 @@ def main():
         
         elif opcion == "6":
             sistema.verificar_configuracion()
-        
+            
         elif opcion == "7":
+            sistema.cargar_estado_actual()
+        
+        elif opcion == "8":
             print("\n👋 ¡Hasta luego! Recuerda:")
             print("   - Usar los comandos generados en Packet Tracer")
             print("   - Verificar la configuración con 'show vlan brief'")
@@ -280,6 +413,7 @@ def main():
             print("❌ Opción no válida. Por favor, seleccione 1-7.")
         
         input("\nPresione Enter para continuar...")
+        limpiar_consola()
         
 def limpiar_consola():
     sistema = platform.system()
